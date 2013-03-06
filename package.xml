@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<package>
+  <name>household_objects_database</name>
+  <description>
+    Class definitions and a few convenience functions for interfacing
+    with a specific SQL database, containing 3D models of a set of
+    common household objects.
+  </description>
+  <author>Matei Ciocarlie, except for source files individually marked otherwise</author>
+  <license>BSD, except for source files individually marked otherwise</license>
+  <maintainer email="matei@willowgarage.com">Matei Ciocarlie</maintainer>
+  <version>0.1.0</version>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>household_objects_database_msgs</build_depend>
+  <build_depend>manipulation_msgs</build_depend>
+ 
+  <build_depend>sql_database</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>tf</build_depend>
+  <build_depend>actionlib</build_depend>
+
+  <!-- for the register script -->
+  <run_depend>rospy</run_depend>
+  <run_depend>rosgraph</run_depend>  
+  <run_depend>roslib</run_depend>  
+  <run_depend>rosservice</run_depend>  
+ 
+</package>
+
+
