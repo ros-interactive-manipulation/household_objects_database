@@ -19,6 +19,8 @@ catkin_package(
 
 include_directories(include ply ${Boost_INCLUDE_DIRS})
 
+install(DIRECTORY include/${PROJECT_NAME}/ DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
+
 # build some libraries
 add_library(${PROJECT_NAME} 
   src/objects_database.cpp
