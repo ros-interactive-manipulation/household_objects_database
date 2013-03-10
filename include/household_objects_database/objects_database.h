@@ -341,6 +341,7 @@ namespace household_objects_database
           ROS_ERROR ("Failed to load descriptor data for vfh id %d", vfh[i]->vfh_id_.data ());
         }
       }
+      return true;
     }
 
     bool
