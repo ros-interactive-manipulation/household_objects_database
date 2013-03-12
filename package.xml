@@ -22,10 +22,14 @@
   <build_depend>actionlib</build_depend>
 
   <!-- for the register script -->
-  <run_depend>rospy</run_depend>
+  <run_depend>household_objects_database_msgs</run_depend>
+  <run_depend>manipulation_msgs</run_depend>
+  <run_depend>roscpp</run_depend>
   <run_depend>rosgraph</run_depend>  
   <run_depend>roslib</run_depend>  
+  <run_depend>rospy</run_depend>
   <run_depend>rosservice</run_depend>  
+  <run_depend>sql_database</run_depend>
  
 </package>
 
