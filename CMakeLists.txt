@@ -14,7 +14,9 @@ find_package(catkin REQUIRED COMPONENTS ${PACKAGE_DEPS})
 find_package(Boost REQUIRED COMPONENTS filesystem system)
 
 catkin_package(
+  CATKIN_DEPENDS household_objects_database_msgs manipulation_msgs roscpp sql_database
   INCLUDE_DIRS include
+  LIBRARIES mesh_loader ${PROJECT_NAME}
   )
 
 include_directories(include ply ${Boost_INCLUDE_DIRS})
