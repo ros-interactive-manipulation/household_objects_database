@@ -407,8 +407,35 @@ private:
                "Returning grasps for first model only");
     }
 
-    HandDescription hd;
+    // get the object id. If the call has specified a new, ORK-style object type, convert that to a
+    // household_database model_id.
     int model_id = target.potential_models[0].model_id;
+    if (!target.potential_models[0].type.key.empty())
+    {
+      if (model_id == 0)
+      {
+        TranslateRecognitionId translate;
+        translate.request.recognition_id = target.potential_models[0].type.key;
+        translateIdCB(translate.request, translate.response);
+        if (translate.response.result == translate.response.SUCCESS)
+        {
+          model_id = translate.response.household_objects_id;
+          ROS_DEBUG_STREAM("Grasp planning: translated ORK key " << target.potential_models[0].type.key << 
+                           " into model_id " << model_id);
+        }
+        else
+        {
+          ROS_ERROR("Failed to translate ORK key into household model_id");
+          error_code.value = error_code.OTHER_ERROR;
+          return false;      
+        }
+      }
+      else
+      {
+        ROS_WARN("Grasp planning: both model_id and ORK key specified in GraspableObject; using model_id and ignoring ORK key");
+      }
+    }
+    HandDescription hd;
     std::string hand_id = hd.handDatabaseName(arm_name);
     
     //retrieve the raw grasps from the database
