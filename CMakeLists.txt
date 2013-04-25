@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 2.8.3)
 project(household_objects_database)
 
 set(PACKAGE_DEPS
+  moveit_core
+  moveit_ros_planning
   household_objects_database_msgs
   manipulation_msgs
   sql_database
@@ -14,12 +16,12 @@ find_package(catkin REQUIRED COMPONENTS ${PACKAGE_DEPS})
 find_package(Boost REQUIRED COMPONENTS filesystem system)
 
 catkin_package(
-  CATKIN_DEPENDS household_objects_database_msgs manipulation_msgs roscpp sql_database
+  CATKIN_DEPENDS moveit_core moveit_ros_planning household_objects_database_msgs manipulation_msgs roscpp sql_database
   INCLUDE_DIRS include
   LIBRARIES mesh_loader ${PROJECT_NAME}
   )
 
-include_directories(include ply ${Boost_INCLUDE_DIRS})
+include_directories(include ply ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 
 install(DIRECTORY include/${PROJECT_NAME}/ DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
 
@@ -41,11 +43,16 @@ add_executable(objects_database_node
 )
 target_link_libraries(objects_database_node ${PROJECT_NAME} ${catkin_LIBRARIES})
 
+add_executable(objects_database_node_simple
+  nodes/objects_database_node_simple.cpp
+)
+target_link_libraries(objects_database_node_simple ${PROJECT_NAME} ${catkin_LIBRARIES})
+
 add_executable(insert_model 
   src/insert_model.cpp
 )
 target_link_libraries(insert_model ${PROJECT_NAME} mesh_loader boost_filesystem boost_system ${catkin_LIBRARIES})
-install(TARGETS insert_model objects_database_node DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+install(TARGETS insert_model objects_database_node objects_database_node_simple DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 # install the scripts
 install(PROGRAMS scripts/register.py DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
