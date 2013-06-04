@@ -410,6 +410,9 @@ private:
     // get the object id. If the call has specified a new, ORK-style object type, convert that to a
     // household_database model_id.
     int model_id = target.potential_models[0].model_id;
+    ROS_DEBUG_STREAM_NAMED("manipulation","Database grasp planner: getting grasps for model " << model_id);
+    ROS_DEBUG_STREAM_NAMED("manipulation","Model is in frame " << target.potential_models[0].pose.header.frame_id << 
+			   " and reference frame is " << target.reference_frame_id);
     if (!target.potential_models[0].type.key.empty())
     {
       if (model_id == 0)
@@ -420,8 +423,8 @@ private:
         if (translate.response.result == translate.response.SUCCESS)
         {
           model_id = translate.response.household_objects_id;
-          ROS_DEBUG_STREAM("Grasp planning: translated ORK key " << target.potential_models[0].type.key << 
-                           " into model_id " << model_id);
+          ROS_DEBUG_STREAM_NAMED("manipulation", "Grasp planning: translated ORK key " << 
+				 target.potential_models[0].type.key << " into model_id " << model_id);
         }
         else
         {
@@ -432,7 +435,8 @@ private:
       }
       else
       {
-        ROS_WARN("Grasp planning: both model_id and ORK key specified in GraspableObject; using model_id and ignoring ORK key");
+        ROS_WARN("Grasp planning: both model_id and ORK key specified in GraspableObject; "
+		 "using model_id and ignoring ORK key");
       }
     }
     HandDescription hd;
@@ -451,12 +455,12 @@ private:
     //order grasps based on request
     if (grasp_ordering_method_ == "random") 
     {
-      ROS_INFO("Randomizing grasps");
+      ROS_DEBUG_NAMED("manipulation", "Randomizing grasps");
       std::random_shuffle(db_grasps.begin(), db_grasps.end());
     }
     else if (grasp_ordering_method_ == "quality")
     {
-      ROS_INFO("Sorting grasps by scaled quality");
+      ROS_DEBUG_NAMED("manipulation", "Sorting grasps by scaled quality");
       std::sort(db_grasps.begin(), db_grasps.end(), greaterScaledQuality);
     }
     else
@@ -552,10 +556,11 @@ private:
         geometry_msgs::Pose ref_pose;
         tf::poseTFToMsg(ref_trans, ref_pose);
         grasp_pose = multiplyPoses(ref_pose, grasp_pose);
-        grasp.grasp_pose.pose = grasp_pose;
-        grasp.grasp_pose.header.frame_id = target.reference_frame_id;
-        grasp.grasp_pose.header.stamp = ros::Time::now();
       }
+      //set the grasp pose
+      grasp.grasp_pose.pose = grasp_pose;
+      grasp.grasp_pose.header.frame_id = target.reference_frame_id;
+      grasp.grasp_pose.header.stamp = ros::Time::now();
       //store the scaled quality
       grasp.grasp_quality = (*it)->scaled_quality_.get();
 
@@ -652,6 +657,7 @@ public:
       (root_nh_, GRASP_PLANNING_ACTION_NAME, 
        boost::bind(&ObjectsDatabaseNode::graspPlanningActionCB, this, _1), false);
     grasp_planning_server_->start();
+    ROS_DEBUG_STREAM_NAMED("manipulation","Database grasp planner ready");
   }
 
   ~ObjectsDatabaseNode()
