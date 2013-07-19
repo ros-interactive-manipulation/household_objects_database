@@ -330,8 +330,7 @@ private:
         ROS_INFO("Could not find database hand id for %s", hand_ids[i].c_str());        
         return false;
       }
-      
-      
+            
       std::map<std::string, geometry_msgs::Vector3>::const_iterator approach_direction = 
         approach_direction_.find(hand_ids[i]);
       
@@ -506,7 +505,7 @@ public:
     ROS_INFO("Database connected");
     for(std::size_t i=0; i < robot_model_->getJointModelGroupNames().size(); ++i)
     {
-      ROS_INFO("%d %s", i, robot_model_->getJointModelGroupNames()[i].c_str());
+      ROS_INFO("%d %s", (int)i, robot_model_->getJointModelGroupNames()[i].c_str());
       geometry_msgs::Vector3 default_approach_direction;
       default_approach_direction.x = 1.0; 
       default_approach_direction.y = 0.0;
