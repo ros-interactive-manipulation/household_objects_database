@@ -314,7 +314,7 @@ private:
       }
       else
       {
-        ROS_WARN("Grasp planning: both model_id and ORK key specified in GraspableObject; using model_id and ignoring ORK key");
+        ROS_DEBUG("Grasp planning: both model_id and ORK key specified in GraspableObject; using model_id and ignoring ORK key");
       }
     }
     //    HandDescription hd;
