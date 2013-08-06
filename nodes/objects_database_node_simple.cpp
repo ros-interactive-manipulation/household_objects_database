@@ -378,8 +378,6 @@ private:
                     (*it)->pre_grasp_posture_.get().joint_angles_.size() );
         Grasp grasp;
         std::vector<std::string> joint_names = robot_model_->getEndEffector(hand_ids[i])->getJointModelNames();
-        
-
         if (database_hand_id->second != "WILLOW_GRIPPER_2010")
         {	  
           //check that the number of joints in the ROS description of this hand
@@ -400,15 +398,6 @@ private:
         }
         else
         {
-	  // AWFUL HACK
-	  std::vector<std::string> joint_names_l;
-	  joint_names_l.push_back(joint_names[2]);
-	  joint_names_l.push_back(joint_names[3]);
-	  joint_names_l.push_back(joint_names[4]);
-	  joint_names_l.push_back(joint_names[5]);
-	  //	  for(std::size_t k =0; k < joint_names.size(); ++k)
-	  //	    ROS_INFO("Joint names: %d %s", k, joint_names[k].c_str());
-	  joint_names = joint_names_l;
           //unfortunately we have to hack this, as the grasp is really defined by a single
           //DOF, but the urdf for the PR2 gripper is not well set up to do that
           if ( joint_names.size() != 4 || (*it)->final_grasp_posture_.get().joint_angles_.size() != 1)
