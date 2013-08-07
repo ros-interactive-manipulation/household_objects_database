@@ -400,11 +400,11 @@ private:
         {
           //unfortunately we have to hack this, as the grasp is really defined by a single
           //DOF, but the urdf for the PR2 gripper is not well set up to do that
-          if ( joint_names.size() != 4 || (*it)->final_grasp_posture_.get().joint_angles_.size() != 1)
+	  /*          if ( joint_names.size() != 4 || (*it)->final_grasp_posture_.get().joint_angles_.size() != 1)
           {
             ROS_ERROR("PR2 gripper specs and database grasp specs do not match expected values");
             continue;
-          }
+	    }*/
           grasp.pre_grasp_posture.name = joint_names;
           grasp.grasp_posture.name = joint_names;
           //replicate the single value from the database 4 times
