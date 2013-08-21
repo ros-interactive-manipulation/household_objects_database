@@ -314,7 +314,7 @@ private:
       }
       else
       {
-        ROS_WARN("Grasp planning: both model_id and ORK key specified in GraspableObject; using model_id and ignoring ORK key");
+        ROS_DEBUG("Grasp planning: both model_id and ORK key specified in GraspableObject; using model_id and ignoring ORK key");
       }
     }
     //    HandDescription hd;
@@ -330,8 +330,7 @@ private:
         ROS_INFO("Could not find database hand id for %s", hand_ids[i].c_str());        
         return false;
       }
-      
-      
+            
       std::map<std::string, geometry_msgs::Vector3>::const_iterator approach_direction = 
         approach_direction_.find(hand_ids[i]);
       
@@ -379,8 +378,6 @@ private:
                     (*it)->pre_grasp_posture_.get().joint_angles_.size() );
         Grasp grasp;
         std::vector<std::string> joint_names = robot_model_->getEndEffector(hand_ids[i])->getJointModelNames();
-        
-
         if (database_hand_id->second != "WILLOW_GRIPPER_2010")
         {	  
           //check that the number of joints in the ROS description of this hand
@@ -401,22 +398,13 @@ private:
         }
         else
         {
-	  // AWFUL HACK
-	  std::vector<std::string> joint_names_l;
-	  joint_names_l.push_back(joint_names[2]);
-	  joint_names_l.push_back(joint_names[3]);
-	  joint_names_l.push_back(joint_names[4]);
-	  joint_names_l.push_back(joint_names[5]);
-	  //	  for(std::size_t k =0; k < joint_names.size(); ++k)
-	  //	    ROS_INFO("Joint names: %d %s", k, joint_names[k].c_str());
-	  joint_names = joint_names_l;
           //unfortunately we have to hack this, as the grasp is really defined by a single
           //DOF, but the urdf for the PR2 gripper is not well set up to do that
-          if ( joint_names.size() != 4 || (*it)->final_grasp_posture_.get().joint_angles_.size() != 1)
+	  /*          if ( joint_names.size() != 4 || (*it)->final_grasp_posture_.get().joint_angles_.size() != 1)
           {
             ROS_ERROR("PR2 gripper specs and database grasp specs do not match expected values");
             continue;
-          }
+	    }*/
           grasp.pre_grasp_posture.name = joint_names;
           grasp.grasp_posture.name = joint_names;
           //replicate the single value from the database 4 times
@@ -506,7 +494,7 @@ public:
     ROS_INFO("Database connected");
     for(std::size_t i=0; i < robot_model_->getJointModelGroupNames().size(); ++i)
     {
-      ROS_INFO("%d %s", i, robot_model_->getJointModelGroupNames()[i].c_str());
+      ROS_INFO("%d %s", (int)i, robot_model_->getJointModelGroupNames()[i].c_str());
       geometry_msgs::Vector3 default_approach_direction;
       default_approach_direction.x = 1.0; 
       default_approach_direction.y = 0.0;

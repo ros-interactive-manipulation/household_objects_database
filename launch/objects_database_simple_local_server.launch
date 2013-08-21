@@ -1,9 +1,14 @@
 <launch>
 
+  <arg name="debug" default="false" />
+  <arg name="info" default="$(arg debug)" />
+
+  <arg unless="$(arg debug)" name="launch_prefix" value="" />
+  <arg     if="$(arg debug)" name="launch_prefix" value="gdb --ex run --args"/>
+
   <!-- database connection parameters -->
   <rosparam command="load" file="$(find household_objects_database)/config/wgs36.yaml"/>
   <!-- start the database wrapper node -->
-  <node pkg="household_objects_database" name="objects_database_node" type="objects_database_node_simple" 
-  	respawn="true" output="screen"/>
+  <node pkg="household_objects_database" name="objects_database_node" type="objects_database_node_simple" respawn="true" output="screen" launch-prefix="$(arg launch_prefix)" />
 
 </launch>
