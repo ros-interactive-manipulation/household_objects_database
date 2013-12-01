@@ -28,6 +28,7 @@ add_library(${PROJECT_NAME}
   src/objects_database.cpp
   src/database_helper_classes.cpp
 )
+add_dependencies(${PROJECT_NAME} household_objects_database_msgs_gencpp)
 
 add_library(mesh_loader 
   src/mesh_loader.cpp
