@@ -8,7 +8,7 @@
   </description>
   <author>Matei Ciocarlie, except for source files individually marked otherwise</author>
   <license>BSD, except for source files individually marked otherwise</license>
-  <maintainer email="matei@willowgarage.com">Matei Ciocarlie</maintainer>
+  <maintainer email="matei.ciocarlie@gmail.com">Matei Ciocarlie</maintainer>
   <version>0.1.3</version>
 
   <buildtool_depend>catkin</buildtool_depend>
