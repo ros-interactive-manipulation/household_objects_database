@@ -194,7 +194,6 @@ namespace household_objects_database
       std::stringstream id;
       id << scaled_model_id;
       std::string where_clause ("scaled_model_id=" + id.str () + " AND hand_name='" + hand_name + "'");
-      //+ " AND grasp_energy >= 0 AND grasp_energy <= 10" );
       return getList<DatabaseGrasp> (grasps, example, where_clause);
     }
 
@@ -207,7 +206,7 @@ namespace household_objects_database
       std::stringstream id;
       id << scaled_model_id;
       std::string where_clause ("scaled_model_id=" + id.str () + " AND hand_name='" + hand_name + "'"
-          + " AND grasp_cluster_rep=true AND grasp_energy >= 0 AND grasp_energy <= 10");
+          + " AND grasp_cluster_rep=true");
       return getList<DatabaseGrasp> (grasps, example, where_clause);
     }
 

@@ -151,6 +151,18 @@ class HandDescription
     return values;
   }
 
+  inline tf::Transform getTransformParam(std::string name)
+  {
+    std::vector<double> vals = getVectorDoubleParam(name);
+    if(vals.size() != 7)
+    {
+      ROS_ERROR("Hand description: bad parameter %s", name.c_str());
+      return tf::Transform(tf::Quaternion(0,0,0,0), tf::Vector3(0,0,0));
+    }
+    return tf::Transform( tf::Quaternion(vals[3], vals[4], vals[5], vals[6]),
+                          tf::Vector3(vals[0], vals[1], vals[2]) );
+  }
+  
  public:
  HandDescription() : root_nh_("~") {}
   
@@ -188,7 +200,16 @@ class HandDescription
   {
     return getStringParam("/hand_description/" + arm_name + "/hand_frame");
   }
-  
+
+  inline tf::Transform armToHandTransform(std::string arm_name)
+  {
+    return getTransformParam("/hand_description/" + arm_name + "/arm_to_hand_transform");
+  }
+
+  inline std::string armAttachmentFrame(std::string arm_name)
+  {
+    return getStringParam("/hand_description/" + arm_name + "/arm_attachment_frame");
+  }
 };
 
 bool greaterScaledQuality(const boost::shared_ptr<DatabaseGrasp> &grasp1, 
@@ -243,6 +264,10 @@ private:
   //! How to order grasps received from database.
   /*! Possible values: "random" or "quality" */
   std::string grasp_ordering_method_;
+
+  //! If true, will return results in the frame of the arm link the hand is attached to
+  /*! Info about how to get to that frame is expected to be found on the param server.*/
+  bool transform_to_arm_frame_;
 
   bool translateIdCB(TranslateRecognitionId::Request &request, TranslateRecognitionId::Response &response)
   {
@@ -557,6 +582,16 @@ private:
         tf::poseTFToMsg(ref_trans, ref_pose);
         grasp_pose = multiplyPoses(ref_pose, grasp_pose);
       }
+      //convert to frame of attachment link on arm, if requested
+      if (transform_to_arm_frame_)
+      {
+        std::string arm_frame = hd.armAttachmentFrame(arm_name);
+        tf::Transform arm_to_hand = hd.armToHandTransform(arm_name);
+        tf::Transform hand_to_arm = arm_to_hand.inverse();
+        geometry_msgs::Pose hand_to_arm_pose;
+        poseTFToMsg(hand_to_arm, hand_to_arm_pose);
+        grasp_pose = multiplyPoses(grasp_pose, hand_to_arm_pose);
+      }
       //set the grasp pose
       grasp.grasp_pose.pose = grasp_pose;
       grasp.grasp_pose.header.frame_id = target.reference_frame_id;
@@ -652,6 +687,7 @@ public:
                                                   &ObjectsDatabaseNode::translateIdCB, this);
 
     priv_nh_.param<std::string>("grasp_ordering_method", grasp_ordering_method_, "random");
+    priv_nh_.param<bool>("transform_to_arm_frame", transform_to_arm_frame_, false);
 
     grasp_planning_server_ = new actionlib::SimpleActionServer<manipulation_msgs::GraspPlanningAction>
       (root_nh_, GRASP_PLANNING_ACTION_NAME, 
